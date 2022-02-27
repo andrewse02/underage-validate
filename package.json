@@ -1,5 +1,5 @@
 {
-  "name": "underage-validate",
+  "name": "@andrewse/underage-validate",
   "version": "1.0.0",
   "description": "A simple, configurable input validator for the browser",
   "main": "underage-validate.js",
