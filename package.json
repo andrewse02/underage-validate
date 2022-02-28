@@ -1,0 +1,23 @@
+{
+  "name": "underage-validate",
+  "version": "1.0.3",
+  "description": "A simple, configurable input validator for the browser.",
+  "main": "underage-validate.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrewse02/underage-validate.git"
+  },
+  "author": "Andrew Elliott",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andrewse02/underage-validate/issues"
+  },
+  "homepage": "https://github.com/andrewse02/underage-validate#readme",
+  "unpkg": "underage-validate.min.js",
+  "directories": {
+    "example": "example"
+  }
+}
