@@ -1,0 +1,14 @@
+form, .error-message-container, .error-message-static-container {
+    display: flex;
+    flex-direction: column;
+
+    width: 200px;
+}
+
+.error-message {
+    color: red;
+}
+
+.error-field {
+    outline: 1px red solid;
+}

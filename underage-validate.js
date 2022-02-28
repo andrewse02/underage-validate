@@ -1,5 +1,8 @@
 class UnderageValidate {
     #fields = [];
+    #invalidFields = new Set();
+    #validFields = new Set();
+
     #rules = {};
 
     #defaultRules = {
@@ -7,16 +10,16 @@ class UnderageValidate {
         errorMessageClass: "error-message",
         errorMessageContainerClass: "error-message-container",
         staticErrorMessages: false,
-        staticContainerId: "error-message-container",
+        staticContainerId: "error-message-static-container",
         noErrorFields: false,
-        errorFieldClass: "error-message"
+        errorFieldClass: "error-field"
     };
 
     #regex = {
         email: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/g,
         password: /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/g, // 8, a, num
         strongPassword: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/g, // 8, a, A, num
-        securePassword: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()\-[{}:;'`,?/\\*~$^+=<>\]]).{8,}$/g // 8, a, A, num, symbol
+        securePassword: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()\-[{}:;'`,?/\\*~$^+=<>\]]).{10,}$/g // 8, a, A, num, symbol
     };
 
     constructor(rules) {
@@ -96,7 +99,10 @@ class UnderageValidate {
 
         const newField = {
             id,
-            rules
+            rules: {
+                ...this.#defaultRules,
+                ...rules
+            }
         };
 
         this.#fields[this.#fields.indexOf(found)] = newField;
@@ -119,7 +125,7 @@ class UnderageValidate {
 
     validateField(id) {
         this.#clearMessage(id);
-        this.#validateField(id);
+        return this.#validateField(id);
     }
 
     #validateField(id) {
@@ -141,69 +147,109 @@ class UnderageValidate {
         if (rules.required) {
             if (!value || value == null || value === "") {
                 this.#sendErrorMessage(false, field, message);
-                return;
+                this.#validFields.delete(field);
+                this.#invalidFields.add(field);
+                return false;
             }
+            this.#invalidFields.delete(field);
+            this.#validFields.add(field);
         }
         if (rules.min) {
             if (typeof rules.min !== "number" && !Number(rules.min)) throw new TypeError("Invalid 'min' number!");
             if (value.length < +rules.min) {
                 this.#sendErrorMessage(false, field, message);
-                return;
+                this.#validFields.delete(field);
+                this.#invalidFields.add(field);
+                return false;
             }
+            this.#invalidFields.delete(field);
+            this.#validFields.add(field);
         }
         if (rules.max) {
             if (typeof rules.max !== "number" && !Number(rules.max)) throw new TypeError("Invalid 'max' number!");
             if (value.length > +rules.max) {
                 this.#sendErrorMessage(false, field, message);
-                return;
+                this.#validFields.delete(field);
+                this.#invalidFields.add(field);
+                return false;
             }
+            this.#invalidFields.delete(field);
+            this.#validFields.add(field);
         }
         if (rules.minValue) {
             if (typeof rules.minValue !== "number" && !Number(rules.minValue))
                 throw new TypeError("Invalid 'minValue' number!");
             if (!Number(value) || +value < +rules.minValue) {
                 this.#sendErrorMessage(false, field, message);
-                return;
+                this.#validFields.delete(field);
+                this.#invalidFields.add(field);
+                return false;
             }
+            this.#invalidFields.delete(field);
+            this.#validFields.add(field);
         }
         if (rules.maxValue) {
             if (typeof rules.maxValue !== "number" && !Number(rules.maxValue))
                 throw new TypeError("Invalid 'maxValue' number!");
             if (!Number(value) || +value > +rules.maxValue) {
                 this.#sendErrorMessage(false, field, message);
-                return;
+                this.#validFields.delete(field);
+                this.#invalidFields.add(field);
+                return false;
             }
+            this.#invalidFields.delete(field);
+            this.#validFields.add(field);
         }
         if (rules.email) {
             if (!this.#regex.email.test(value)) {
                 this.#sendErrorMessage(false, field, message);
-                return;
+                this.#validFields.delete(field);
+                this.#invalidFields.add(field);
+                return false;
             }
+            this.#invalidFields.delete(field);
+            this.#validFields.add(field);
         }
         if (rules.password) {
             if (!this.#regex.password.test(value)) {
                 this.#sendErrorMessage(false, field, message);
-                return;
+                this.#validFields.delete(field);
+                this.#invalidFields.add(field);
+                return false;
             }
+            this.#invalidFields.delete(field);
+            this.#validFields.add(field);
         }
         if (rules.strongPassword) {
             if (!this.#regex.strongPassword.test(value)) {
                 this.#sendErrorMessage(false, field, message);
-                return;
+                this.#validFields.delete(field);
+                this.#invalidFields.add(field);
+                return false;
             }
+            this.#invalidFields.delete(field);
+            this.#validFields.add(field);
         }
         if (rules.securePassword) {
             if (!this.#regex.securePassword.test(value)) {
                 this.#sendErrorMessage(false, field, message);
-                return;
+                this.#validFields.delete(field);
+                this.#invalidFields.add(field);
+                return false;
             }
+            this.#invalidFields.delete(field);
+            this.#validFields.add(field);
         }
         if (rules.regex) {
             if (rules.regex.constructor.name !== "RegExp") throw new TypeError("Invalid regular expression!");
             if (!rules.regex.test(value)) {
                 this.#sendErrorMessage(false, field, message);
-                return;
+                this.#validFields.delete(field);
+                this.#invalidFields.add(field);
+                return false;
             }
+            this.#invalidFields.delete(field);
+            this.#validFields.add(field);
         }
         if (rules.matching) {
             if (!rules.matching || rules.matching == null || rules.matching === "")
@@ -215,11 +261,23 @@ class UnderageValidate {
 
             if (matching.value !== value) {
                 this.#sendErrorMessage(false, field, message);
-                return;
+                this.#validFields.delete(field);
+                this.#invalidFields.add(field);
+                return false;
             }
+            this.#invalidFields.delete(field);
+            this.#validFields.add(field);
         }
 
         return true;
+    }
+
+    getInvalidFields() {
+        return Array.from(this.#invalidFields);
+    }
+
+    getValidFields() {
+        return Array.from(this.#validFields);
     }
 
     #sendErrorMessage(valid, field, message) {
