@@ -59,7 +59,6 @@ Ways to install
     ```
     _**Note:** You cannot `require` UnderageValidate, it is meant for browsers which do not support that feature._
 <br />
-<br />
 
 -   CDN from unpkg
     ```html
