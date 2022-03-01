@@ -16,10 +16,10 @@ class UnderageValidate {
     };
 
     #regex = {
-        email: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/g,
-        password: /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/g, // 8, a, num
-        strongPassword: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/g, // 8, a, A, num
-        securePassword: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()\-[{}:;'`,?/\\*~$^+=<>\]]).{10,}$/g // 8, a, A, num, symbol
+        email: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
+        password: /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/, // 8, a, num
+        strongPassword: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/, // 8, a, A, num
+        securePassword: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()\-[{}:;'`,?/\\*~$^+=<>\]]).{10,}$/ // 8, a, A, num, symbol
     };
 
     constructor(rules) {
@@ -116,7 +116,8 @@ class UnderageValidate {
         this.#fields.forEach((field) => {
             if (!this.#validateField(field.id)) {
                 document.getElementById(field.id).focus();
-                return (valid = false);
+                valid = false;
+                return;
             }
         });
 
