@@ -3,6 +3,8 @@ class UnderageValidate {
     #invalidFields = new Set();
     #validFields = new Set();
 
+    #matches = new Set();
+
     #rules = {};
 
     #defaultRules = {
@@ -56,6 +58,7 @@ class UnderageValidate {
         };
 
         this.#fields.push(newField);
+        if(rules.matching) this.#matches.add({ primary: document.getElementById(rules.matching), secondary: document.getElementById(id) });
         return this;
     }
 
@@ -126,7 +129,22 @@ class UnderageValidate {
 
     validateField(id) {
         this.#clearMessage(id);
+        this.#validateMatches(id);
         return this.#validateField(id);
+    }
+
+    invalidateField(id, message) {
+        const field = document.getElementById(id);
+        if (!field) throw new ReferenceError(`Could not find ID of "${id}" in document!`);
+
+        const fieldObj = this.#fields.find((item) => item.id === id);
+        if (!fieldObj) throw new ReferenceError("Field was not added to validator!");
+
+        this.#validFields.delete(field);
+        this.#invalidFields.add(field);
+        this.#sendErrorMessage(false, field, message);
+        
+        return this;
     }
 
     #validateField(id) {
@@ -271,6 +289,15 @@ class UnderageValidate {
         }
 
         return true;
+    }
+
+    #validateMatches(id) {
+        const found = [...this.#matches].find(element => element.primary.id === id);
+        if(!found) return;
+        
+        this.#clearMessage(id);
+        this.#clearMessage(found.secondary.id);
+        this.#validateField(found.secondary.id);
     }
 
     getInvalidFields() {

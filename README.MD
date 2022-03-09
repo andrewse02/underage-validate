@@ -211,37 +211,37 @@ Now let's look at a full example to see every way you can configure your instanc
 -   
     ```html
     <div class="error-message-container">
-        <input id="required" type="text" value="Required" autocomplete="off">
+        <input id="required" type="text" value="Required">
     </div>
     <div class="error-message-container">
-        <input id="min" type="text" value="Min Chars" autocomplete="off">
+        <input id="min" type="text" value="Min Chars">
     </div>
     <div class="error-message-container">
-        <input id="max" type="text" value="Max Chars" autocomplete="off">
+        <input id="max" type="text" value="Max Chars">
     </div>
     <div class="error-message-container">
-        <input id="min-value" type="text" value="Min Value" autocomplete="off">
+        <input id="min-value" type="text" value="3">
     </div>
     <div class="error-message-container">
-        <input id="max-value" type="text" value="Max Value" autocomplete="off">
+        <input id="max-value" type="text" value="10">
     </div>
     <div class="error-message-container">
-        <input id="email" type="text" value="Email" autocomplete="off">
+        <input id="email" type="text" value="email@site.com">
     </div>
     <div class="error-message-container">
-        <input id="password" type="password" value="password123" autocomplete="off">
+        <input id="password" type="password" value="password123">
     </div>
     <div class="error-message-container">
-        <input id="strongPassword" type="password" value="Password123" autocomplete="off">
+        <input id="strong-password" type="password" value="Password123">
     </div>
     <div class="error-message-container">
-        <input id="securePassword" type="password" value="Password123!" autocomplete="off">
+        <input id="secure-password" type="password" value="Password123!">
     </div>
     <div class="error-message-container">
-        <input id="regex" type="text" value="Regex" autocomplete="off">
+        <input id="regex" type="text" value="Regex">
     </div>
     <div class="error-message-container">
-        <input id="matching" type="text" value="Password123!" autocomplete="off">
+        <input id="matching" type="text" value="Password123!">
     </div>
 
     <button id="submit">Submit</button>
@@ -294,7 +294,7 @@ Now let's look at a full example to see every way you can configure your instanc
     .addField("max-value", {
         maxValue: 10,
         required: true,
-        message: "Minimum value of 10!"
+        message: "Maximum value of 10!"
     })
     .addField("email", {
         email: true,
@@ -328,7 +328,7 @@ Now let's look at a full example to see every way you can configure your instanc
     });
 
     document.querySelectorAll("input").forEach((input) => {
-        input.addEventListener("change", (event) => {
+        input.addEventListener("input", (event) => {
             validator.validateField(event.target.id);
         });
     });
@@ -337,6 +337,7 @@ Now let's look at a full example to see every way you can configure your instanc
         event.preventDefault();
 
         validator.validate();
+        if(document.getElementById("required").value === "Required") validator.invalidateField("required", "Example!");
     });
     ```
 
@@ -361,6 +362,8 @@ Let's look at a list of all methods tou can use on an instance of UnderageValida
     `validate() -> Boolean`: Validates all fields added, adding error messages and field classes if applicable
     <br>
     `validateField(id) -> Boolean`: Validates the given field added, adding an error message and field class if applicable
+    <br>
+    `invalidateField(id, message) -> UnderageValidate`: Forces an error message onto the given field, useful for recieving errors from a server
     <br>
     `getInvalidFields() -> Array[{id, rules}]`: Returns an array of all invalid field objects after validation
     <br>

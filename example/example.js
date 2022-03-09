@@ -31,7 +31,7 @@ const validator = new UnderageValidate({
 .addField("max-value", {
     maxValue: 10,
     required: true,
-    message: "Minimum value of 10!"
+    message: "Maximum value of 10!"
 })
 .addField("email", {
     email: true,
@@ -65,7 +65,7 @@ const validator = new UnderageValidate({
 });
 
 document.querySelectorAll("input").forEach((input) => {
-    input.addEventListener("change", (event) => {
+    input.addEventListener("input", (event) => {
         validator.validateField(event.target.id);
     });
 });
@@ -74,4 +74,5 @@ form.addEventListener("submit", (event) => {
     event.preventDefault();
 
     validator.validate();
+    if(document.getElementById("required").value === "Required") validator.invalidateField("required", "Example!");
 });
